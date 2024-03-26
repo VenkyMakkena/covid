@@ -91,22 +91,22 @@ app.put('/districts/:districtId', async (request, response) => {
 })
 app.get('/states/:stateId/stats/', async (request, response) => {
   const {stateId} = request.params
-  const getStateReport = `
-    SELECT SUM(cases) AS cases,
-        SUM(cured) AS cured,
-        SUM(active) AS active,
-        SUM(deaths) AS deaths 
+  const getStateStatsQuery = `
+    SELECT SUM(cases),
+        SUM(cured),
+        SUM(active),
+        SUM(deaths) 
     FROM
       district 
     WHERE 
       state_id = ${stateId};`
-  const statsReport = await database.get(getStateReport)
-  console.log(statsReport)
+  const stats = await database.get(getStateStatsQuery)
+  console.log(stats)
   response.send({
-    totalCases: statsReport['cases'],
-    totalCured: statsReport['cured'],
-    totalActive: statsReport['active'],
-    toatalDeaths: statsReport['deaths'],
+    totalCases: stats['SUM(cases)'],
+    totalCured: stats['SUM(cured)'],
+    totalActive: stats['SUM(active)'],
+    toatalDeaths: stats['SUM(deaths)'],
   })
 })
 
